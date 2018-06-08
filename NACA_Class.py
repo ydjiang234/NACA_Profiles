@@ -72,19 +72,21 @@ class NACA_Profile:
         tempX, tempY = self.combineUperLowerPoints()
         self.profile = GeneralProfile(tempX, tempY)
 
-    def getXYdata(Type=0):
+    def getXYdata(self, Type=0):
         if Type == 0:
-            return self.profile.getXYdata()
+            X, Y = self.profile.getXYdata()
+            return X, Y
         elif Type == 1:
             return self.profile.getPoints()
 
-    def getUpperXYdata(Type=0):
+    def getUpperXYdata(self, Type=0):
         if Type == 0:
-            return self.upperProfile.getXYdata()
+            X, Y = self.upperProfile.getXYdata()
+            return X, Y
         elif Type == 1:
             return self.upperProfile.getPoints()
 
-    def getLowerXYdata(Type=0):
+    def getLowerXYdata(self, Type=0):
         if Type == 0:
             return self.lowerProfile.getXYdata()
         elif Type == 1:

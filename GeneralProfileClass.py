@@ -9,17 +9,19 @@ import numpy as np
 
 class GeneralProfile:
 
-    def __init__(self,*args):
+    def __init__(self, *args):
         if len(args) == 1:
             self.setPoints(args[0])
         elif len(args) == 2:
             self.setPoints(args[0], args[1])
         return None
 
+    #Set profile points by XY data
     def setPoints(self, Xdata, Ydata):
         self.Xdata, self.Ydata = Xdata, Ydata
         return None
     
+    #Set profile points by pointArray
     def setPointsByArray(self, pointArray):
         self.Xdata, self.Ydata = self.pointArrayToXYdata(pointArray)
         return None
@@ -30,7 +32,7 @@ class GeneralProfile:
 
     def pointArrayToXYdata(self, pointArray):
         return pointArray[:,0], pointArray[:,1]
-    
+    #Rotate profile aournd the centre point
     def rotate(self, angle, centrePoint):
         angle = angle  * np.pi / 180.0
         tempX = self.Xdata - centrePoint[0]
@@ -42,10 +44,12 @@ class GeneralProfile:
         self.Xdata = outX
         self.Ydata = outY
 
+    #Transfer profile by a vector
     def transfer(self, vector):
         self.Xdata += vector[0]
         self.Ydata += vector[1]
     
+    #Scale profile according to the centre point
     def scale(self, scaleFactor, centrePoint):
         outX = self.Xdata - centrePoint[0]
         outY = self.Ydata - centrePoint[1]
