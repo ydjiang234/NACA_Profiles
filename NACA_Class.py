@@ -7,6 +7,11 @@
 
 class NACA_Profile:
 
-    def __init__(self, description='A NACA Profile'):
+    def __init__(self, **kwargs):
+        self.profileName = kwargs['profileName']
+        if 'description' in kwargs:
+            self.description = kwargs['description']
+        else:
+            self.description = self.profileName
         return None
 
