@@ -96,16 +96,55 @@ class NACA4Digits(NACA_Profile):
 
     def __init__(self, **kwargs):
         NACA_Profile.__init__(self, **kwargs)
-        #Maximum thickness as a fraction of the chord
-        self.t = float(self.profileName[-2:]) / 100.0
-
+        self.ycFun = np.vectorize(self.ycFun1)
+        self.thetaFun= np.vectorize(self.thetaFun1)
+        self.parseParameters()
         self.generateUnitProfiles()
         self.generateProfiles()
         return None
 
+    def parseParameters(self):
+        #Maximum thickness as a fraction of the chord
+        self.t = float(self.profileName[-2:]) / 100.0
+        #Maximum camber
+        self.m = float(self.profileName[-4]) / 100.0
+        #Location of maximum camber
+        self.p = float(self.profileName[-3]) / 10.0
+        if (self.m==0.0) and (self.p==0.0):
+            self.isSym = True
+        else:
+            self.isSym = False
+        return None
+
+    def ytFun(self, x):
+        yt = 5.0 * self.t * (0.2969 * np.sqrt(x) - 0.1260 * x - 0.3516 * x**2 + 0.2843 * x**3 - 0.1015 * x**4)
+        return yt
+
+    def ycFun1(self, x):
+        if self.isSym:
+            yc = 0.0
+        else:
+            if x<=self.p:
+                yc = self.m / self.p**2 * (2.0 * self.p *x - x**2)
+            else:
+                yc = self.m / (1.0 - self.p)**2 * ((1.0 - 2.0 * self.p) + 2.0 * self.p * x - x**2)
+        return yc
+
+    def thetaFun1(self, x):
+        if self.isSym:
+            theta = 0.0
+        else:
+            if x<=self.p:
+                theta = 2.0 * self.m / self.p**2 * (self.p - x)
+            else:
+                theta = 2.0 * self.m / (1.0 - self.p)**2 * (self.p - x)
+        return theta
+
     def generateUnitProfiles(self):
         tempX = np.linspace(0.0, 1.0, self.pointNum)
-        tempY = 5.0 * self.t * (0.2969 * np.sqrt(tempX) - 0.1260 * tempX - 0.3516 * tempX**2 + 0.2843 * tempX**3 - 0.1015 * tempX**4) 
+        tempYt = self.ytFun(tempX)
+        tempYc = self.ycFun(tempX)
+        tempTheta = self.thetaFun(tempX)
 
-        self.upperProfile = GeneralProfile(tempX, tempY)
-        self.lowerProfile = GeneralProfile(tempX, -1.0*tempY)
+        self.upperProfile = GeneralProfile(tempX - tempYt * np.sin(tempTheta), tempYc + tempYt * np.cos(tempTheta))
+        self.lowerProfile = GeneralProfile(tempX + tempYt * np.sin(tempTheta), tempYc - tempYt * np.cos(tempTheta))
