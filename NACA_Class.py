@@ -43,6 +43,11 @@ class NACA_Profile:
             self.leadingPoint = kwargs['leadingPoint']
         else:
             self.leadingPoint = (0.0, 0.0)
+        #Is close
+        if 'isClose' in kwargs:
+            self.isClose = kwargs['isClose']
+        else:
+            self.isClose = (0.0, 0.0)
 
         return None
 
@@ -117,7 +122,10 @@ class NACA4Digits(NACA_Profile):
         return None
 
     def ytFun(self, x):
-        yt = 5.0 * self.t * (0.2969 * np.sqrt(x) - 0.1260 * x - 0.3516 * x**2 + 0.2843 * x**3 - 0.1015 * x**4)
+        if self.isClose:
+            yt = 5.0 * self.t * (0.2969 * np.sqrt(x) - 0.1260 * x - 0.3516 * x**2 + 0.2843 * x**3 - 0.1015 * x**4)
+        else:
+            yt = 5.0 * self.t * (0.2969 * np.sqrt(x) - 0.1260 * x - 0.3516 * x**2 + 0.2843 * x**3 - 0.1036 * x**4)
         return yt
 
     def ycFun1(self, x):
