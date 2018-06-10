@@ -132,13 +132,13 @@ class NACA4Digits(NACA_Profile):
 
     def thetaFun1(self, x):
         if self.isSym:
-            theta = 0.0
+            temp = 0.0
         else:
             if x<=self.p:
-                theta = 2.0 * self.m / self.p**2 * (self.p - x)
+                temp = 2.0 * self.m / self.p**2 * (self.p - x)
             else:
-                theta = 2.0 * self.m / (1.0 - self.p)**2 * (self.p - x)
-        return theta
+                temp = 2.0 * self.m / (1.0 - self.p)**2 * (self.p - x)
+        return np.arctan(temp)
 
     def generateUnitProfiles(self):
         tempX = np.linspace(0.0, 1.0, self.pointNum)
