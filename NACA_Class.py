@@ -200,14 +200,15 @@ class NACA5Digits(NACA4Digits):
         dd = np.pi / 2.0 - np.arcsin(1.0 - 2.0 * self.m)
         Q = aa / bb - cc * dd
         self.K1 = 6.0 * self.Cli / Q
-        aaa = 3.0 * (self.m - self.xf)**2 - self.m**3
-        bbb = (1.0 - self.m**3)
-        self.K2 = aaa / bbb * self.K1
+        if self.isReflex:
+            aaa = 3.0 * (self.m - self.xf)**2 - self.m**3
+            bbb = (1.0 - self.m)**3
+            self.K2 = aaa / bbb * self.K1
 
     def xfFun(self, m):
         return m * (1.0 - np.sqrt(m / 3.0))
 
-    def solveM(self, num=20):
+    def solveM(self, num=100):
         from scipy.interpolate import interp1d
         tempM = np.linspace(0.0, 1.0, num)
         tempXf = self.xfFun(tempM)
@@ -217,9 +218,10 @@ class NACA5Digits(NACA4Digits):
     def ycFun1(self, x):
         if self.isReflex:
             if x<=self.m:
-                yc = 0.0
+                yc = self.K1 / 6.0 * ((x - self.m)**3 - self.K2 / self.K1 * (1.0 - self.m)**3 * x - self.m**3 * x + self.m**3)
             else:
-                yc = 0.0      
+                yc = self.K1 / 6.0 * (self.K2 / self.K1 * (x - self.m)**3 - self.K2 / self.K1 * (1.0 - self.m)**3 * x - self.m**3 * x + self.m**3)
+      
         else:
             if x<=self.m:
                 yc = self.K1 / 6.0 * (x**3 - 3.0 * self.m * x**2 + self.m**2 * (3.0 - self.m) * x)
@@ -231,9 +233,9 @@ class NACA5Digits(NACA4Digits):
     def thetaFun1(self, x):
         if self.isReflex:
             if x<=self.m:
-                temp = 0.0
+                temp = self.K1 / 6.0 * (3.0 * (x - self.m)**2 - self.K2 / self.K1 * (1.0 - self.m)**3 - self.m**3)
             else:
-                temp = 0.0
+                temp = self.K1 / 6.0 * (3.0 * self.K2 / self.K1 * (x - self.m)**2 - self.K2 / self.K1 * (1.0 - self.m)**3 - self.m**3)
         else:
             if x<=self.m:
                 temp = self.K1 / 6.0 * (3.0 * x**2 - 6.0 * self.m * x + self.m**2 * (3.0 - self.m))

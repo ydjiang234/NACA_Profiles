@@ -2,7 +2,7 @@ from NACA_Class import NACA_Profile, NACA4Digits, NACA5Digits
 import numpy as np
 import matplotlib.pyplot as plt
 
-a = NACA5Digits(profileName='NACA23115', isClose=False, chordLength=1.0, twist = 0.0, description='A test profile')
+a = NACA5Digits(profileName='NACA22015', isClose=False, chordLength=1.0, twist = 0.0, description='A test profile')
 b = NACA4Digits(profileName='NACA2412', isClose=True, chordLength=1.0, twist = 0.0, description='A test profile')
 X, Y = a.getXYdata()
 plt.plot(X, Y, 'o-')
@@ -15,4 +15,5 @@ plt.axis('equal')
 plt.grid()
 #plt.plot(a.upperPointX,a.upperPointY)
 #plt.plot(a.lowerPointX,a.lowerPointY)
-plt.show()
+#plt.show()
+print(a.m, a.K1)
