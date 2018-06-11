@@ -1,13 +1,16 @@
-from NACA_Class import NACA_Profile, NACA4Digits
+from NACA_Class import NACA_Profile, NACA4Digits, NACA5Digits
 import numpy as np
 import matplotlib.pyplot as plt
 
-a = NACA4Digits(profileName='NACA2412', isClose=False, chordLength=1.0, twist = 0.0, description='A test profile')
+a = NACA5Digits(profileName='NACA23115', isClose=False, chordLength=1.0, twist = 0.0, description='A test profile')
 b = NACA4Digits(profileName='NACA2412', isClose=True, chordLength=1.0, twist = 0.0, description='A test profile')
 X, Y = a.getXYdata()
 plt.plot(X, Y, 'o-')
-X, Y = b.getXYdata()
+X, Y = a.getCamberXYdata()
 plt.plot(X, Y, 'o-')
+
+data = np.loadtxt('23015.txt').T
+plt.plot(data[0], data[1])
 plt.axis('equal')
 plt.grid()
 #plt.plot(a.upperPointX,a.upperPointY)
